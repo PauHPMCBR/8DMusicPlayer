@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ListPreference
+        android:key="selectedHrtf"
+        android:title="Selected HRTF"
+        android:summary="%s"/>
+
+    <ListPreference
+        android:key="selectedReverb"
+        android:title="Reverb"
+        android:summary="%s"/>
+
+    <EditTextPreference
+        android:defaultValue="7"
+        android:key="maxRadius"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Max Radius (m)"
+        app:useSimpleSummaryProvider="true" />
+
+    <SeekBarPreference
+        android:defaultValue="052"
+        android:key="stereoAngle"
+        android:max="314"
+        android:title="Stereo angle (radians)"
+        android:summary="0.52"
+        />
+
+</PreferenceScreen>
