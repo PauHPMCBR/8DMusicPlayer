@@ -29,6 +29,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.pmb.musicplayer.player.PlayerFragment;
 import com.pmb.openal.OpenALManager;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final int STORAGE_PERMISSION_CODE = 1001;
@@ -105,29 +107,34 @@ public class MainActivity extends AppCompatActivity {
         helpFragment = (HelpFragment) getSupportFragmentManager().findFragmentByTag("HelpFragment");
     }
 
+    ArrayList<AlertDialog> activeAlertDialogs = new ArrayList<>();
     private void showPermissionExplanationDialog() {
-        new AlertDialog.Builder(this)
+        activeAlertDialogs.add(new AlertDialog.Builder(this)
                 .setTitle("Storage Permission Required")
                 .setMessage("This app needs access to storage to load and play music files. Without this permission, the app cannot function properly.")
                 .setPositiveButton("Grant Permission", (dialog, which) -> requestPermissionDialog())
                 .setNegativeButton("Exit App", (dialog, which) -> finishAffinity())
                 .setCancelable(false)
-                .show();
+                .show());
     }
 
     private void onPermissionsGranted() {
         setupAppComponents();
+        for (AlertDialog alertDialog : activeAlertDialogs) {
+            if (alertDialog != null && alertDialog.isShowing()) alertDialog.dismiss();
+        }
+        activeAlertDialogs.clear();
         Toast.makeText(this, "Permissions granted, initializing app", Toast.LENGTH_SHORT).show();
     }
 
     private void onPermissionsDenied() {
-        new AlertDialog.Builder(this)
+        activeAlertDialogs.add(new AlertDialog.Builder(this)
                 .setTitle("Permission Required")
                 .setMessage("This app cannot function without storage access. Would you like to grant permissions now?")
                 .setPositiveButton("Try Again", (dialog, which) -> requestPermissionDialog())
                 .setNegativeButton("Exit App", (dialog, which) -> finishAffinity())
                 .setCancelable(false)
-                .show();
+                .show());
     }
 
     @Override
@@ -173,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        activeAlertDialogs.clear();
         OpenALManager.cleanupOpenAL();
     }
 

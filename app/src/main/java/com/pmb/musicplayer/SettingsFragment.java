@@ -22,6 +22,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     final static String ALSOFT_CONF_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/alsoft.conf";
@@ -107,7 +108,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             });
 
-            selectedMaxRadius = Float.parseFloat(maxRadiusPref.getText());
+            selectedMaxRadius = Float.parseFloat(Objects.requireNonNull(maxRadiusPref.getText()));
         }
 
         SeekBarPreference stereoAnglePref = findPreference("stereoAngle");
@@ -145,7 +146,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
 
-        Map<String, ?> preferences = PreferenceManager.getDefaultSharedPreferences(getContext()).getAll();
+        Map<String, ?> preferences = PreferenceManager.getDefaultSharedPreferences(requireContext()).getAll();
 
         preferences.forEach((key, value) ->{
             Log.d("Preferences", String.format("%s -> %s", key, value));
@@ -166,6 +167,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         OpenALManager.initOpenAL(selectedHRTF);
     }
     static void writeAlsoftConf() {
+        OpenALManager.stopMusic();
+        OpenALManager.cleanupOpenAL();
         try {
             File file = new File(ALSOFT_CONF_PATH);
             FileWriter writer = new FileWriter(file);

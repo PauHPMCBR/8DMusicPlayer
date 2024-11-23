@@ -12,6 +12,7 @@
         <ListPreference
             android:key="selectedReverb"
             android:title="Reverb"
+            android:defaultValue="None"
             android:summary="%s"/>
 
         <EditTextPreference

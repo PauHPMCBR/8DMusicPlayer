@@ -1,8 +1,5 @@
 package com.pmb.musicplayer;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,18 +13,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import io.noties.markwon.Markwon;
-import io.noties.markwon.image.DefaultMediaDecoder;
-import io.noties.markwon.image.ImageItem;
 import io.noties.markwon.image.ImagesPlugin;
-import io.noties.markwon.image.SchemeHandler;
 import io.noties.markwon.image.file.FileSchemeHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.Collections;
 
 public class HelpFragment extends Fragment {
     private static final String TAG = "HelpFragment";
