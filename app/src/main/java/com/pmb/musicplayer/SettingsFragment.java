@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 
+import androidx.preference.CheckBoxPreference;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -29,12 +30,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             "Livingroom", "Stoneroom", "Auditorium", "ConcertHall", "Cave", "Arena", "Hangar",
             "CarpetedHallway", "Hallway", "StoneCorridor", "Alley", "Forest", "City", "Mountains",
             "Quarry", "Plain", "ParkingLot", "SewerPipe", "Underwater", "Drugged", "Dizzy", "Psychotic"};
-    final MainActivity mainActivity;
 
     static String selectedHRTF;
     static String selectedReverb;
     static float selectedMaxRadius;
     static float selectedStereoAngle;
+    static boolean showHiddenFiles;
+    static boolean showOnlyAudioFiles;
+
+    final MainActivity mainActivity;
 
     public SettingsFragment(MainActivity mainActivity) {
         super();
@@ -118,6 +122,26 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             });
 
             selectedStereoAngle = (float)stereoAnglePref.getValue() / 100f;
+        }
+
+        CheckBoxPreference showOnlyAudioFilesPref = findPreference("showOnlyAudioFiles");
+        if (showOnlyAudioFilesPref != null) {
+            showOnlyAudioFilesPref.setOnPreferenceChangeListener((preference, newValue) -> {
+                showOnlyAudioFiles = (boolean) newValue;
+                return true;
+            });
+
+            showOnlyAudioFiles = showOnlyAudioFilesPref.isChecked();
+        }
+
+        CheckBoxPreference showHiddenFilesPref = findPreference("showHiddenFiles");
+        if (showHiddenFilesPref != null) {
+            showHiddenFilesPref.setOnPreferenceChangeListener((preference, newValue) -> {
+                showHiddenFiles = (boolean) newValue;
+                return true;
+            });
+
+            showHiddenFiles = showHiddenFilesPref.isChecked();
         }
 
 

@@ -138,7 +138,7 @@ public class PlayerFragment extends Fragment implements OpenALManager.OpenALCall
             return true;
         });
 
-        fileChooser = new FileChooser(rootView.getContext(), "Select wav file", FileChooser.DialogType.SELECT_FILE, mLastFile);
+        fileChooser = new FileChooser(rootView.getContext(), "Select audio file", mLastFile);
 
         Button addSourceButton = rootView.findViewById(R.id.addSourceButton);
         addSourceButton.setOnClickListener(v -> {
@@ -168,15 +168,17 @@ public class PlayerFragment extends Fragment implements OpenALManager.OpenALCall
 
     public void chooseFile(ArrayList<String> unpickableFiles) {
         FileChooser.FileSelectionCallback callback = file -> {
-            mLastFile = file.getParentFile();
-            if (!unpickableFiles.contains(file.getPath())) {
-                AudioSource audioSource = new AudioSource(getContext(), playbackManager, innerCardView, file.getPath(), CIRCLE_COLORS[colorCycle % CIRCLE_COLORS.length]);
-                ++colorCycle;
-                audioSource.setHeight((radiusSeekBar.getProgress() * 0.01f) * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS);
-                audioSource.setRotationSpeed((rotationSpeedSeekBar.getProgress() * 0.01f - 0.5f) * MAX_ROTATION_SPEED * 2);
-                audioSource.setHeight((heightSeekBar.getProgress() * 0.01f - 0.5f) * MAX_HEIGHT * 2);
-                audioSource.play();
-                playbackManager.addNewSource(audioSource);
+            if (file != null) {
+                mLastFile = file.getParentFile();
+                if (!unpickableFiles.contains(file.getPath())) {
+                    AudioSource audioSource = new AudioSource(getContext(), playbackManager, innerCardView, file.getPath(), CIRCLE_COLORS[colorCycle % CIRCLE_COLORS.length]);
+                    ++colorCycle;
+                    audioSource.setHeight((radiusSeekBar.getProgress() * 0.01f) * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS);
+                    audioSource.setRotationSpeed((rotationSpeedSeekBar.getProgress() * 0.01f - 0.5f) * MAX_ROTATION_SPEED * 2);
+                    audioSource.setHeight((heightSeekBar.getProgress() * 0.01f - 0.5f) * MAX_HEIGHT * 2);
+                    audioSource.play();
+                    playbackManager.addNewSource(audioSource);
+                }
             }
         };
         fileChooser.show(callback);

@@ -55,8 +55,10 @@ public class PlaybackManager {
         playbackSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser && selectedAudioSource != null)
-                    setPlaybackPosition(progress / 1000f);
+                if (fromUser && selectedAudioSource != null) {
+                    selectedAudioSource.changePlaybackTo(progress / 1000f);
+                    playbackValue.setText(secondsToPrettyStr((int) selectedAudioSource.currentPlaybackPosition) + " / " + secondsToPrettyStr((int) selectedAudioSource.audioDuration));
+                }
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -101,12 +103,6 @@ public class PlaybackManager {
     public void updateSeekBar(float currentPlaybackPosition, float audioDuration) {
         playbackSeekBar.setProgress((int)(PLAYBACK_SEEK_BAR_RESOLUTION * currentPlaybackPosition / audioDuration));
         playbackValue.setText(secondsToPrettyStr((int) currentPlaybackPosition) + " / " + secondsToPrettyStr((int) audioDuration));
-    }
-
-    public void setPlaybackPosition(float relativePlayed) {
-        for (AudioSource as : audioSources)
-            as.changePlaybackTo(relativePlayed);
-        playbackValue.setText(secondsToPrettyStr((int) selectedAudioSource.currentPlaybackPosition) + " / " + secondsToPrettyStr((int) selectedAudioSource.audioDuration));
     }
 
     public void addNewSource(AudioSource audioSource) {
