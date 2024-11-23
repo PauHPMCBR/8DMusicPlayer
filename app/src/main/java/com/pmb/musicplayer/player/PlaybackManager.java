@@ -10,6 +10,7 @@ import com.pmb.musicplayer.R;
 import com.pmb.openal.OpenALManager;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class PlaybackManager {
     private final PlayerFragment pf;
@@ -84,25 +85,29 @@ public class PlaybackManager {
     }
 
     public void changePlayResumeButton(boolean setPlay) {
-        if (setPlay) { //called when the selected audio source is paused, for example
-            pauseResumeButton.setImageResource(R.drawable.ic_play);
-            boolean onePlaying = false;
-            for (AudioSource as : audioSources) if (as.getPlayStatus() == AudioSource.PlayStatus.PLAYING) {
-                onePlaying = true;
-                break;
+        pf.requireActivity().runOnUiThread(() -> {
+            if (setPlay) { //called when the selected audio source is paused, for example
+                pauseResumeButton.setImageResource(R.drawable.ic_play);
+                boolean onePlaying = false;
+                for (AudioSource as : audioSources)
+                    if (as.getPlayStatus() == AudioSource.PlayStatus.PLAYING) {
+                        onePlaying = true;
+                        break;
+                    }
+                if (!onePlaying)
+                    pauseResumeAllButton.setImageResource(R.drawable.ic_play);
+            } else { //called when the selected audio source is resumed, for example
+                pauseResumeButton.setImageResource(R.drawable.ic_pause);
+                pauseResumeAllButton.setImageResource(R.drawable.ic_pause);
             }
-            if (!onePlaying)
-                pauseResumeAllButton.setImageResource(R.drawable.ic_play);
-        }
-        else { //called when the selected audio source is resumed, for example
-            pauseResumeButton.setImageResource(R.drawable.ic_pause);
-            pauseResumeAllButton.setImageResource(R.drawable.ic_pause);
-        }
+        });
     }
 
     public void updateSeekBar(float currentPlaybackPosition, float audioDuration) {
-        playbackSeekBar.setProgress((int)(PLAYBACK_SEEK_BAR_RESOLUTION * currentPlaybackPosition / audioDuration));
-        playbackValue.setText(secondsToPrettyStr((int) currentPlaybackPosition) + " / " + secondsToPrettyStr((int) audioDuration));
+        pf.requireActivity().runOnUiThread(() -> {
+            playbackSeekBar.setProgress((int) (PLAYBACK_SEEK_BAR_RESOLUTION * currentPlaybackPosition / audioDuration));
+            playbackValue.setText(secondsToPrettyStr((int) currentPlaybackPosition) + " / " + secondsToPrettyStr((int) audioDuration));
+        });
     }
 
     public void addNewSource(AudioSource audioSource) {
@@ -144,19 +149,21 @@ public class PlaybackManager {
     }
 
     public void stopSource(String filePath) {
-        for (AudioSource source : audioSources) {
-            if (source.filePath.equals(filePath)) {
-                source.stop();
-                audioSources.remove(source);
-                break;
+        pf.requireActivity().runOnUiThread(() -> {
+            for (AudioSource source : audioSources) {
+                if (source.filePath.equals(filePath)) {
+                    source.stop();
+                    audioSources.remove(source);
+                    break;
+                }
             }
-        }
-        if (audioSources.isEmpty()) {
-            stopAllSources();
-            return;
-        }
+            if (audioSources.isEmpty()) {
+                stopAllSources();
+                return;
+            }
 
-        sourceSelect.changeSelectedAudioSource(0);
-        sourceSelect.updatePopupWindow();
+            sourceSelect.changeSelectedAudioSource(0);
+            sourceSelect.updatePopupWindow();
+        });
     }
 }

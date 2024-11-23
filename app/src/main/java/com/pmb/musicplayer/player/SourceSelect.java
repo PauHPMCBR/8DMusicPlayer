@@ -52,8 +52,7 @@ public class SourceSelect {
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.popup_item, parent, false);
-                return new RecyclerView.ViewHolder(view) {
-                }; //?
+                return new RecyclerView.ViewHolder(view) {};
             }
 
             @Override

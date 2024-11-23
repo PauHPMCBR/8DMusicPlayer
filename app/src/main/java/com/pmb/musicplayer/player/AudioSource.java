@@ -108,7 +108,7 @@ public class AudioSource {
 
         automaticallyRotate = false;
         angle = (float) Math.atan2(relY, relX);
-        radius = (float) (MAX_RADIUS * Math.sqrt(relX*relX + relY*relY)*2);
+        radius = Math.min((float) (MAX_RADIUS * Math.sqrt(relX*relX + relY*relY)*2), MAX_RADIUS);
 
         updateCirclePosition(angle, radius);
         OpenALManager.updateSourcePosition(filePath, angle, radius, height);
@@ -157,6 +157,7 @@ public class AudioSource {
             while (playStatus == PlayStatus.PLAYING) {
                 currentPlaybackPosition = OpenALManager.getPlaybackPosition(filePath);
                 if (currentPlaybackPosition < 0 || currentPlaybackPosition >= audioDuration) {
+                    //HERE
                     playbackManager.stopSource(filePath);
                     break;
                 }
