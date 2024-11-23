@@ -55,7 +55,10 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.navigation.fragment
     implementation libs.navigation.ui
-    implementation libs.core.v462
+
+    implementation  libs.core
+    implementation  libs.image
+
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
