@@ -2,10 +2,14 @@ package com.pmb.musicplayer;
 
 import static android.os.Build.VERSION.SDK_INT;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.EditTextPreference;
@@ -82,7 +86,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 Log.d("Preferences", String.format("Selected Reverb: %s", newValue));
                 selectedReverb = (String) newValue;
                 writeAlsoftConf();
-                reloadOpenAL();
+                Toast.makeText(mainActivity, "Restarting...", Toast.LENGTH_SHORT).show();
+                new Handler(Looper.getMainLooper()).postDelayed(this::reloadApplication, 300); // Delay to ensure writeAlsoftConf completes
                 return true;
             });
 
@@ -160,15 +165,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         OpenALManager.setStereoAngle(selectedStereoAngle);
     }
 
+    void reloadApplication() {
+        Intent intent = mainActivity.getPackageManager().getLaunchIntentForPackage(mainActivity.getPackageName());
+        assert intent != null;
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clear the current activity stack
+        startActivity(intent);
+        System.exit(0);  // Optional, to ensure the app closes completely
+    }
 
     static void reloadOpenAL() {
         OpenALManager.stopMusic();
         OpenALManager.cleanupOpenAL();
         OpenALManager.initOpenAL(selectedHRTF);
     }
+
     static void writeAlsoftConf() {
-        OpenALManager.stopMusic();
-        OpenALManager.cleanupOpenAL();
         try {
             File file = new File(ALSOFT_CONF_PATH);
             FileWriter writer = new FileWriter(file);

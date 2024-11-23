@@ -27,9 +27,8 @@ public class PlayerFragment extends Fragment implements OpenALManager.OpenALCall
     PlaybackManager playbackManager;
     FileChooser fileChooser;
     public static float MIN_RADIUS = 0; //in meters
-    public static float MAX_RADIUS = 7; //in meters
+    public static float MAX_RADIUS = 7; //in meters, shared with height as well
     public static float MAX_ROTATION_SPEED = 5; //in radians/s, both ways
-    public static float MAX_HEIGHT = 7; //in meters, both ways
     public static int PLAYBACK_SEEK_BAR_RESOLUTION = 1000;
 
     public static int[] CIRCLE_COLORS = {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.MAGENTA};
@@ -86,7 +85,7 @@ public class PlayerFragment extends Fragment implements OpenALManager.OpenALCall
         heightSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                float height = (progress * 0.01f - 0.5f) * MAX_HEIGHT * 2;
+                float height = (progress * 0.01f - 0.5f) * MAX_RADIUS * 2;
                 heightValue.setText(String.format("%.1f m", height));
                 if (playbackManager.selectedAudioSource != null) playbackManager.selectedAudioSource.setHeight(height);
             }
@@ -104,7 +103,7 @@ public class PlayerFragment extends Fragment implements OpenALManager.OpenALCall
         radiusValue.setText(String.format("%.1f m", radius));
         float radPerSec = (rotationSpeedSeekBar.getProgress() * 0.01f - 0.5f) * MAX_ROTATION_SPEED * 2;
         rotationSpeedValue.setText(String.format("%.1f rad/s", radPerSec));
-        float height = (heightSeekBar.getProgress() * 0.01f - 0.5f) * MAX_HEIGHT * 2;
+        float height = (heightSeekBar.getProgress() * 0.01f - 0.5f) * MAX_RADIUS * 2;
         heightValue.setText(String.format("%.1f m", height));
     }
 
@@ -175,7 +174,7 @@ public class PlayerFragment extends Fragment implements OpenALManager.OpenALCall
                     ++colorCycle;
                     audioSource.setHeight((radiusSeekBar.getProgress() * 0.01f) * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS);
                     audioSource.setRotationSpeed((rotationSpeedSeekBar.getProgress() * 0.01f - 0.5f) * MAX_ROTATION_SPEED * 2);
-                    audioSource.setHeight((heightSeekBar.getProgress() * 0.01f - 0.5f) * MAX_HEIGHT * 2);
+                    audioSource.setHeight((heightSeekBar.getProgress() * 0.01f - 0.5f) * MAX_RADIUS * 2);
                     audioSource.play();
                     playbackManager.addNewSource(audioSource);
                 }

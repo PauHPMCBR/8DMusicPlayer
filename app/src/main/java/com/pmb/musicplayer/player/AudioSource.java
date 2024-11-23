@@ -26,7 +26,7 @@ public class AudioSource {
         PAUSED,
         STOPPED
     }
-    final PlaybackManager playbackManager;
+    private final PlaybackManager playbackManager;
     String filePath;
     private final CardView innerCardView;
     public final View circleView;
